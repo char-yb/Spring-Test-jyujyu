@@ -3,11 +3,13 @@ package com.jyujyu.springtest;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class MyCalculatorTest {
 
 	@Test
+	@DisplayName("MyCalculator 덧셈 테스트")
 	void addTest() {
 		// 아래 세 가지의 행위를 AAA 패턴이라 칭한다.
 		// Arrange - 준비
@@ -21,6 +23,7 @@ class MyCalculatorTest {
 	}
 
 	@Test
+	@DisplayName("MyCalculator 뺄셈 테스트")
 	void subTest() {
 		// GWT 패턴, AAA와 유사
 		// given
@@ -34,6 +37,7 @@ class MyCalculatorTest {
 	}
 
 	@Test
+	@DisplayName("MyCalculator 곱셈 테스트")
 	void mul() {
 		MyCalculator myCalculator = new MyCalculator(2.0);
 
@@ -42,6 +46,7 @@ class MyCalculatorTest {
 	}
 
 	@Test
+	@DisplayName("MyCalculator 나눗셈 테스트")
 	void div() {
 		MyCalculator myCalculator = new MyCalculator(10.0);
 
@@ -50,6 +55,7 @@ class MyCalculatorTest {
 	}
 
 	@Test
+	@DisplayName("MyCalculator 사칙연산 테스트")
 	void complicatedCalculateTest() {
 		// given
 		MyCalculator myCalculator = new MyCalculator(0.0);
@@ -67,6 +73,7 @@ class MyCalculatorTest {
 	}
 
 	@Test
+	@DisplayName("MyCalculator 0으로 나누었을때 ZeroDivisionException throws 테스트")
 	void divideZeroTest() {
 		// given
 		MyCalculator myCalculator = new MyCalculator(10.0);
