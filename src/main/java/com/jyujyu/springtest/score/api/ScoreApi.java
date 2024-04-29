@@ -8,37 +8,45 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jyujyu.springtest.score.application.StudentScoreService;
 import com.jyujyu.springtest.score.dto.request.SaveExamScoreRequest;
 import com.jyujyu.springtest.score.dto.response.ExamFailStudentResponse;
 import com.jyujyu.springtest.score.dto.response.ExamPassStudentResponse;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 public class ScoreApi {
 
+	private final StudentScoreService studentScoreService;
+
 	@PutMapping("/exam/{exam}/score")
-	public Object saveScore(
+	public void saveScore(
 		@PathVariable String exam,
 		@RequestBody SaveExamScoreRequest request
 	) {
-		return request;
+		studentScoreService.saveScore(
+			request.studentName(),
+			exam,
+			request.korScore(),
+			request.engScore(),
+			request.mathScore()
+		);
 	}
 
 	@GetMapping("/exam/{exam}/pass")
 	public List<ExamPassStudentResponse> passExam(
 		@PathVariable String exam
 	) {
-		return List.of(
-			ExamPassStudentResponse.of("jyujyu", 60.0)
-		);
+		return studentScoreService.getPassStudents(exam);
 	}
 
 	@GetMapping("/exam/{exam}/fail")
 	public List<ExamFailStudentResponse> failExam(
 		@PathVariable String exam
 	) {
-		return List.of(
-			ExamFailStudentResponse.of("jyujyu", 59.9)
-		);
+		return studentScoreService.getFailStudents(exam);
 	}
 
 
