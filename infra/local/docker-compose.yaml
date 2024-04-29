@@ -12,6 +12,7 @@ services:
       - 3306:3306
     volumes:
       - ./dbdata:/var/lib/mysql
+  ## Flyway Migration, 버전 관리 도구
   local-db-migrate:
     image: flyway/flyway:7
     restart: always
