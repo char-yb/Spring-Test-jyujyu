@@ -1,4 +1,4 @@
-package com.jyujyu.springtest.dto.response;
+package com.jyujyu.springtest.score.dto.response;
 
 public record ExamFailStudentResponse(
 	String studentName,

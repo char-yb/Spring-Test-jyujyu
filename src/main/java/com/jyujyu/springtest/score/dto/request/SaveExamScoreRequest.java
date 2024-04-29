@@ -1,4 +1,4 @@
-package com.jyujyu.springtest.dto.request;
+package com.jyujyu.springtest.score.dto.request;
 
 public record SaveExamScoreRequest (
 	String studentName,

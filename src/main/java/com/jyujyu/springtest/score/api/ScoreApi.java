@@ -1,20 +1,16 @@
-package com.jyujyu.springtest.controller;
+package com.jyujyu.springtest.score.api;
 
 import java.util.List;
 
-import org.hibernate.type.descriptor.java.ObjectArrayJavaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jyujyu.springtest.dto.request.SaveExamScoreRequest;
-import com.jyujyu.springtest.dto.response.ExamFailStudentResponse;
-import com.jyujyu.springtest.dto.response.ExamPassStudentResponse;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import com.jyujyu.springtest.score.dto.request.SaveExamScoreRequest;
+import com.jyujyu.springtest.score.dto.response.ExamFailStudentResponse;
+import com.jyujyu.springtest.score.dto.response.ExamPassStudentResponse;
 
 @RestController
 public class ScoreApi {
