@@ -123,8 +123,9 @@ class StudentScoreServiceTest {
 	@DisplayName("성적 저장 로직 검증 / 평균 점수가 60점 미만인 경우")
 	public void saveScoreLogicTest2() {
 		// given: 평균 점수가 60점 미만인 경우
-
-		StudentScore expectStudentScore = StudentScoreTestDataBuilder.failed().build();
+		// StudentScore expectStudentScore = StudentScoreTestDataBuilder.failed().build();
+		// Fixture 클래스를 통해 Builder의 자유도를 방지한다.
+		StudentScore expectStudentScore = StudentScoreFixture.failed();
 
 		StudentFail expectStudentFail = StudentFail.builder()
 			.studentName(expectStudentScore.getStudentName())
