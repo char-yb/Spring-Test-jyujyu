@@ -19,6 +19,7 @@ import com.jyujyu.springtest.score.domain.StudentPass;
 import com.jyujyu.springtest.score.domain.StudentScore;
 import com.jyujyu.springtest.score.dto.response.ExamFailStudentResponse;
 import com.jyujyu.springtest.score.dto.response.ExamPassStudentResponse;
+import com.jyujyu.springtest.score.model.StudentScoreTestDataBuilder;
 
 class StudentScoreServiceTest {
 
@@ -65,27 +66,15 @@ class StudentScoreServiceTest {
 	@DisplayName("성적 저장 로직 검증 / 평균 점수가 60점 이상인 경우")
 	public void saveScoreLogicTest() {
 		// given: 평균 점수가 80점 이상인 경우
-		String studentName = "jyujyu";
-		String exam = "midterm";
-		Integer korScore = 80;
-		Integer engScore = 100;
-		Integer mathScore = 60;
-
-		StudentScore expectStudentScore = StudentScore.builder()
-			.studentName(studentName)
-			.exam(exam)
-			.korScore(korScore)
-			.engScore(engScore)
-			.mathScore(mathScore)
-			.build();
+		StudentScore expectStudentScore = StudentScoreTestDataBuilder.passed().build();
 		StudentPass expectStudentPass = StudentPass.builder()
-			.studentName(studentName)
-			.exam(exam)
+			.studentName(expectStudentScore.getStudentName())
+			.exam(expectStudentScore.getExam())
 			.avgScore(
 				(new MyCalculator(0.0))
-					.add(korScore.doubleValue())
-					.add(engScore.doubleValue())
-					.add(mathScore.doubleValue())
+					.add(expectStudentScore.getKorScore().doubleValue())
+					.add(expectStudentScore.getEngScore().doubleValue())
+					.add(expectStudentScore.getMathScore().doubleValue())
 					.div(3.0)
 					.getResult()
 			)
@@ -96,11 +85,11 @@ class StudentScoreServiceTest {
 
 		// when
 		studentScoreService.saveScore(
-			studentName,
-			exam,
-			korScore,
-			engScore,
-			mathScore
+			expectStudentScore.getStudentName(),
+			expectStudentScore.getExam(),
+			expectStudentScore.getKorScore(),
+			expectStudentScore.getEngScore(),
+			expectStudentScore.getMathScore()
 		);
 
 		// then
@@ -134,28 +123,17 @@ class StudentScoreServiceTest {
 	@DisplayName("성적 저장 로직 검증 / 평균 점수가 60점 미만인 경우")
 	public void saveScoreLogicTest2() {
 		// given: 평균 점수가 60점 미만인 경우
-		String studentName = "jyujyu";
-		String exam = "midterm";
-		Integer korScore = 50;
-		Integer engScore = 40;
-		Integer mathScore = 30;
 
-		StudentScore expectStudentScore = StudentScore.builder()
-			.studentName(studentName)
-			.exam(exam)
-			.korScore(korScore)
-			.engScore(engScore)
-			.mathScore(mathScore)
-			.build();
+		StudentScore expectStudentScore = StudentScoreTestDataBuilder.failed().build();
 
 		StudentFail expectStudentFail = StudentFail.builder()
-			.studentName(studentName)
-			.exam(exam)
+			.studentName(expectStudentScore.getStudentName())
+			.exam(expectStudentScore.getExam())
 			.avgScore(
 				(new MyCalculator(0.0))
-					.add(korScore.doubleValue())
-					.add(engScore.doubleValue())
-					.add(mathScore.doubleValue())
+					.add(expectStudentScore.getKorScore().doubleValue())
+					.add(expectStudentScore.getEngScore().doubleValue())
+					.add(expectStudentScore.getMathScore().doubleValue())
 					.div(3.0)
 					.getResult()
 			)
@@ -166,11 +144,11 @@ class StudentScoreServiceTest {
 
 		// when
 		studentScoreService.saveScore(
-			studentName,
-			exam,
-			korScore,
-			engScore,
-			mathScore
+			expectStudentScore.getStudentName(),
+			expectStudentScore.getExam(),
+			expectStudentScore.getKorScore(),
+			expectStudentScore.getEngScore(),
+			expectStudentScore.getMathScore()
 		);
 
 		// then
