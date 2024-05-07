@@ -1,12 +1,10 @@
 package com.jyujyu.springtest.score.application;
 
-import static java.util.stream.Collectors.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -24,16 +22,27 @@ import com.jyujyu.springtest.score.dto.response.ExamPassStudentResponse;
 
 class StudentScoreServiceTest {
 
+	private StudentScoreService studentScoreService;
+	private StudentScoreRepository studentScoreRepository;
+	private StudentPassRepository studentPassRepository;
+	private StudentFailRepository studentFailRepository;
+
+	@BeforeEach
+	public void setUp() {
+		studentScoreRepository = Mockito.mock(StudentScoreRepository.class);
+		studentPassRepository = Mockito.mock(StudentPassRepository.class);
+		studentFailRepository = Mockito.mock(StudentFailRepository.class);
+		studentScoreService = new StudentScoreService(
+			studentScoreRepository,
+			studentPassRepository,
+			studentFailRepository
+		);
+	}
+
 	@Test
 	@DisplayName("첫 번째 성적 저장 테스트")
 	public void firstSaveScoreMockTest() {
 		// given
-		StudentScoreService studentScoreService = new StudentScoreService(
-			// Mock 객체를 StudentScoreService 생성자에 주입
-			Mockito.mock(StudentScoreRepository.class),
-			Mockito.mock(StudentPassRepository.class),
-			Mockito.mock(StudentFailRepository.class)
-		);
 		String studentName = "jyujyu";
 		String exam = "midterm";
 		Integer korScore = 80;
@@ -56,16 +65,6 @@ class StudentScoreServiceTest {
 	@DisplayName("성적 저장 로직 검증 / 평균 점수가 60점 이상인 경우")
 	public void saveScoreLogicTest() {
 		// given: 평균 점수가 80점 이상인 경우
-		StudentScoreRepository studentScoreRepository = Mockito.mock(StudentScoreRepository.class);
-		StudentPassRepository studentPassRepository = Mockito.mock(StudentPassRepository.class);
-		StudentFailRepository studentFailRepository = Mockito.mock(StudentFailRepository.class);
-		StudentScoreService studentScoreService = new StudentScoreService(
-			// Use the same mock objects here
-			studentScoreRepository,
-			studentPassRepository,
-			studentFailRepository
-		);
-
 		String studentName = "jyujyu";
 		String exam = "midterm";
 		Integer korScore = 80;
@@ -135,16 +134,6 @@ class StudentScoreServiceTest {
 	@DisplayName("성적 저장 로직 검증 / 평균 점수가 60점 미만인 경우")
 	public void saveScoreLogicTest2() {
 		// given: 평균 점수가 60점 미만인 경우
-		StudentScoreRepository studentScoreRepository = Mockito.mock(StudentScoreRepository.class);
-		StudentPassRepository studentPassRepository = Mockito.mock(StudentPassRepository.class);
-		StudentFailRepository studentFailRepository = Mockito.mock(StudentFailRepository.class);
-		StudentScoreService studentScoreService = new StudentScoreService(
-			// Use the same mock objects here
-			studentScoreRepository,
-			studentPassRepository,
-			studentFailRepository
-		);
-
 		String studentName = "jyujyu";
 		String exam = "midterm";
 		Integer korScore = 50;
@@ -210,10 +199,6 @@ class StudentScoreServiceTest {
 	@DisplayName("합격자 목록 조회 테스트")
 	public void getPassStudentsTest() {
 		// given
-		StudentScoreRepository studentScoreRepository = Mockito.mock(StudentScoreRepository.class);
-		StudentPassRepository studentPassRepository = Mockito.mock(StudentPassRepository.class);
-		StudentFailRepository studentFailRepository = Mockito.mock(StudentFailRepository.class);
-
 		// 고정값 설정
 		StudentPass expectStudent1 = StudentPass.builder()
 			.id(1L)
@@ -240,13 +225,6 @@ class StudentScoreServiceTest {
 			notExpectStudent3
 		));
 
-		StudentScoreService studentScoreService = new StudentScoreService(
-			// Use the same mock objects here
-			studentScoreRepository,
-			studentPassRepository,
-			studentFailRepository
-		);
-
 		// when
 		// 기대하고자 하는 응답값
 		var expectPassStudents = Stream.of(
@@ -271,10 +249,6 @@ class StudentScoreServiceTest {
 	@DisplayName("불합격자 목록 조회 테스트")
 	public void getFailStudentsTest() {
 		// given
-		StudentScoreRepository studentScoreRepository = Mockito.mock(StudentScoreRepository.class);
-		StudentPassRepository studentPassRepository = Mockito.mock(StudentPassRepository.class);
-		StudentFailRepository studentFailRepository = Mockito.mock(StudentFailRepository.class);
-
 		// 고정값 설정
 		StudentFail notExpectStudent = StudentFail.builder()
 			.id(1L)
@@ -300,13 +274,6 @@ class StudentScoreServiceTest {
 			expectStudent2,
 			notExpectStudent
 		));
-
-		StudentScoreService studentScoreService = new StudentScoreService(
-			// Use the same mock objects here
-			studentScoreRepository,
-			studentPassRepository,
-			studentFailRepository
-		);
 
 		// when
 		// 기대하고자 하는 응답값
