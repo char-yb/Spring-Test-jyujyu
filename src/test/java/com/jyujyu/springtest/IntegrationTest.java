@@ -27,19 +27,19 @@ public class IntegrationTest {
 	static DockerComposeContainer rdbms;
 
 	static {
-		rdbms = new DockerComposeContainer(new File("infra/test/docker-compose.yaml"))
+		rdbms =
+			new DockerComposeContainer(new File("infra/test/docker-compose.yaml"))
 				.withExposedService(
 					"local-db",
 					3306,
-					Wait.forLogMessage(".*ready for connections.*\\s", 1)
-						.withStartupTimeout(Duration.ofSeconds(300))
-				)
-			.withExposedService(
-				"local-db-migration",
-				0,
-				Wait.forLogMessage(".*Migration completed.*\\s", 1)
-					.withStartupTimeout(Duration.ofSeconds(300))
-			);
+					Wait.forLogMessage(".*ready for connections.*", 1)
+						.withStartupTimeout(Duration.ofSeconds(300)))
+				.withExposedService(
+					"local-db-migrate",
+					0,
+					Wait.forLogMessage("(.*Successfully applied.*)|(.*Successfully validated.*)", 1)
+						.withStartupTimeout(Duration.ofSeconds(300)));
+
 		rdbms.start();
 	}
 
@@ -54,7 +54,7 @@ public class IntegrationTest {
 			var rdbmsPort = rdbms.getServicePort("local-db", 3306);
 
 			// 동적 주입
-			properties.put("spring.datasource.url", "jdbc:mysql://" + rdbmsHost + ":" + rdbmsPort + "/test");
+			properties.put("spring.datasource.url", "jdbc:mysql://" + rdbmsHost + ":" + rdbmsPort + "/score");
 
 			TestPropertyValues.of(properties)
 				.applyTo(applicationContext);
