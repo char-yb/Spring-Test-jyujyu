@@ -1,5 +1,8 @@
 package com.jyujyu.springtest.score.application;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -155,71 +158,44 @@ class StudentScoreServiceTest {
 	@DisplayName("합격자 목록 조회 테스트")
 	public void getPassStudentsTest() {
 		// given
-		// 고정값 설정
-		String testExam = "textExam";
-		StudentPass expectStudent1 = StudentPassFixture.create("jyujyu1", testExam);
-		StudentPass expectStudent2 = StudentPassFixture.create("jyujyu2", testExam);
-		StudentPass notExpectStudent3 = StudentPassFixture.create("jyujyu3", "subTerm");
+		String givenExam = "testExam";
+		StudentPass expectedStudent1 = StudentPassFixture.create("bsj1", givenExam);
+		StudentPass expectedStudent2 = StudentPassFixture.create("bsj2", givenExam);
+		StudentPass notExpectedStudent = StudentPassFixture.create("bsj3", "secondExam");
 
-		Mockito.when(studentPassRepository.findAll()).thenReturn(List.of(
-			expectStudent1,
-			expectStudent2,
-			notExpectStudent3
-		));
+		when(studentPassRepository.findAll())
+			.thenReturn(List.of(expectedStudent1, expectedStudent2, notExpectedStudent));
 
 		// when
-		// 기대하고자 하는 응답값
-		var expectPassStudents = Stream.of(
-			expectStudent1,
-			expectStudent2
-		)
-			.map(pass ->
-				new ExamPassStudentResponse(pass.getStudentName(), pass.getAvgScore()))
-			.toList();
+		List<ExamPassStudentResponse> responses = studentScoreService.getPassStudents("testExam");
+		var expectedResponses =
+			Stream.of(expectedStudent1, expectedStudent2)
+				.map(pass -> new ExamPassStudentResponse(pass.getStudentName(), pass.getAvgScore()))
+				.toList();
 
-		// 인자로 넣은 exam 값으로 합격자 명단 리스트 조회
-		List<ExamPassStudentResponse> passStudents = studentScoreService.getPassStudents("midterm");
-
-		// then
-		// 합격자 명단은 2명이어야 함
-		Mockito.verify(studentPassRepository, Mockito.times(1)).findAll();
-		Assertions.assertIterableEquals(expectPassStudents, passStudents);
-		Assertions.assertEquals(2, passStudents.size());
+		assertThatIterable(responses).isEqualTo(expectedResponses);
 	}
 
 	@Test
-	@DisplayName("불합격자 목록 조회 테스트")
-	public void getFailStudentsTest() {
+	@DisplayName("불합격자 명단 가져오기 검증")
+	void getFailStudentList() {
 		// given
-		// 고정값 설정
-		String testExam = "textExam";
-		StudentFail notExpectStudent = StudentFailFixture.create("jyujyu4", "subTerm");
-		StudentFail expectStudent1 = StudentFailFixture.create("jyujyu1", testExam);
-		StudentFail expectStudent2 = StudentFailFixture.create("jyujyu2", testExam);
+		String givenExam = "testExam";
+		StudentFail expectedStudent1 = StudentFailFixture.create("bsj1", givenExam);
+		StudentFail expectedStudent2 = StudentFailFixture.create("bsj2", givenExam);
+		StudentFail notExpectedStudent = StudentFailFixture.create("bsj3", "secondExam");
 
-		Mockito.when(studentFailRepository.findAll()).thenReturn(List.of(
-			expectStudent1,
-			expectStudent2,
-			notExpectStudent
-		));
+		when(studentFailRepository.findAll())
+			.thenReturn(List.of(expectedStudent1, expectedStudent2, notExpectedStudent));
 
 		// when
-		// 기대하고자 하는 응답값
-		var expectFailStudents = Stream.of(
-			expectStudent1,
-			expectStudent2
-		)
-			.map(fail ->
-				new ExamFailStudentResponse(fail.getStudentName(), fail.getAvgScore()))
-			.toList();
-
-		// 인자로 넣은 exam 값으로 불합격자 명단 리스트 조회
-		List<ExamFailStudentResponse> failStudents = studentScoreService.getFailStudents("midterm");
+		List<ExamFailStudentResponse> responses = studentScoreService.getFailStudents("testExam");
+		var expectedResponses =
+			Stream.of(expectedStudent1, expectedStudent2)
+				.map(pass -> new ExamFailStudentResponse(pass.getStudentName(), pass.getAvgScore()))
+				.toList();
 
 		// then
-		// 불합격자 명단은 2명이어야 함
-		Mockito.verify(studentFailRepository, Mockito.times(1)).findAll();
-		Assertions.assertIterableEquals(expectFailStudents, failStudents);
-		Assertions.assertEquals(2, failStudents.size());
+		assertThatIterable(responses).isEqualTo(expectedResponses);
 	}
 }

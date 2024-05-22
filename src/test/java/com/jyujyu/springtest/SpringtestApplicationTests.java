@@ -1,10 +1,8 @@
 package com.jyujyu.springtest;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class SpringtestApplicationTests {
+class SpringtestApplicationTests extends IntegrationTest {
 
 	@Test
 	void contextLoads() {
