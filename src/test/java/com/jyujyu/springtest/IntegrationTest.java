@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
+import com.redis.testcontainers.RedisContainer;
+
 // 부모 클래스같은 경우 테스트가 동작하지 않아도 된다.
 @Ignore
 // 실제로 테스트 코드가 동작할 때 SpringContext를 Load하지 않지만
@@ -25,6 +27,8 @@ import org.testcontainers.containers.wait.strategy.Wait;
 public class IntegrationTest {
 
 	static DockerComposeContainer rdbms;
+	// redis container 생성
+	static RedisContainer redis;
 
 	static {
 		rdbms =
@@ -41,6 +45,14 @@ public class IntegrationTest {
 						.withStartupTimeout(Duration.ofSeconds(300)));
 
 		rdbms.start();
+
+		// redis container 생성
+		redis = new RedisContainer(RedisContainer.DEFAULT_IMAGE_NAME
+			// version
+			.withTag("6.2.5")
+		);
+		// redis container 시작
+		redis.start();
 	}
 
 	// MySQL 접속 설정 파일을 테스트 코드가 동작할 때 바꿔주는 코드
@@ -55,6 +67,9 @@ public class IntegrationTest {
 
 			// 동적 주입
 			properties.put("spring.datasource.url", "jdbc:mysql://" + rdbmsHost + ":" + rdbmsPort + "/score");
+
+			properties.put("spring.data.redis.host", redis.getHost());
+			properties.put("spring.data.redis.port", redis.getFirstMappedPort().toString());
 
 			TestPropertyValues.of(properties)
 				.applyTo(applicationContext);
