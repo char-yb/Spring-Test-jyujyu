@@ -13,7 +13,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.utility.DockerImageName;
 
 import com.redis.testcontainers.RedisContainer;
 
@@ -29,6 +31,8 @@ public class IntegrationTest {
 	static DockerComposeContainer rdbms;
 	// redis container 생성
 	static RedisContainer redis;
+
+	static LocalStackContainer aws;
 
 	static {
 		rdbms =
@@ -53,6 +57,11 @@ public class IntegrationTest {
 		);
 		// redis container 시작
 		redis.start();
+		DockerImageName imageName = DockerImageName.parse("localstack/localstack:0.11.2");
+		aws = (new LocalStackContainer(imageName))
+			.withServices(LocalStackContainer.Service.S3)
+			.withStartupTimeout(Duration.ofSeconds(600));
+		aws.start();
 	}
 
 	// MySQL 접속 설정 파일을 테스트 코드가 동작할 때 바꿔주는 코드
@@ -73,6 +82,20 @@ public class IntegrationTest {
 
 			TestPropertyValues.of(properties)
 				.applyTo(applicationContext);
+
+			try {
+				aws.execInContainer(
+					"awslocal",
+					"s3api",
+					"create-bucket",
+					"--bucket",
+					"test-bucket"
+				);
+
+				properties.put("aws.s3.endpoint", aws.getEndpoint().toString());
+			} catch (Exception e) {
+				//  ignore
+			}
 		}
 	}
 }
