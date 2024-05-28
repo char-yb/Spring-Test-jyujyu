@@ -57,10 +57,11 @@ public class IntegrationTest {
 		);
 		// redis container 시작
 		redis.start();
-		DockerImageName imageName = DockerImageName.parse("localstack/localstack:0.11.2");
-		aws = (new LocalStackContainer(imageName))
-			.withServices(LocalStackContainer.Service.S3)
-			.withStartupTimeout(Duration.ofSeconds(600));
+
+		aws =
+			(new LocalStackContainer())
+				.withServices(LocalStackContainer.Service.S3)
+				.withStartupTimeout(Duration.ofSeconds(600));
 		aws.start();
 	}
 
@@ -80,10 +81,8 @@ public class IntegrationTest {
 			properties.put("spring.data.redis.host", redis.getHost());
 			properties.put("spring.data.redis.port", redis.getFirstMappedPort().toString());
 
-			TestPropertyValues.of(properties)
-				.applyTo(applicationContext);
-
 			try {
+				// docker 컨테이너 내부에서 aws cli를 실행하여 s3 버킷을 생성
 				aws.execInContainer(
 					"awslocal",
 					"s3api",
@@ -92,10 +91,13 @@ public class IntegrationTest {
 					"test-bucket"
 				);
 
-				properties.put("aws.s3.endpoint", aws.getEndpoint().toString());
+				properties.put("aws.endpoint", aws.getEndpoint().toString());
 			} catch (Exception e) {
 				//  ignore
 			}
+
+			TestPropertyValues.of(properties)
+				.applyTo(applicationContext);
 		}
 	}
 }
