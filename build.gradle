@@ -33,6 +33,7 @@ dependencies {
     implementation("software.amazon.awssdk:sdk-core")
     implementation("software.amazon.awssdk:sts")
     implementation("software.amazon.awssdk:s3")
+    implementation("org.springframework.kafka:spring-kafka")
 
     runtimeOnly 'com.mysql:mysql-connector-j'
 
@@ -44,6 +45,7 @@ dependencies {
     testImplementation 'org.testcontainers:testcontainers:1.19.0'
     testImplementation 'com.redis.testcontainers:testcontainers-redis-junit:1.6.4'
     testImplementation 'org.testcontainers:localstack:1.19.0'
+    testImplementation("org.testcontainers:kafka")
 }
 
 tasks.named('test') {
