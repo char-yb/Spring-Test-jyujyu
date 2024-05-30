@@ -13,6 +13,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
@@ -33,6 +34,8 @@ public class IntegrationTest {
 	static RedisContainer redis;
 
 	static LocalStackContainer aws;
+
+	static KafkaContainer kafka;
 
 	static {
 		rdbms =
@@ -63,6 +66,11 @@ public class IntegrationTest {
 				.withServices(LocalStackContainer.Service.S3)
 				.withStartupTimeout(Duration.ofSeconds(600));
 		aws.start();
+
+		// kafka container 생성
+		kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.5.0"))
+			.withKraft();
+		kafka.start();
 	}
 
 	// MySQL 접속 설정 파일을 테스트 코드가 동작할 때 바꿔주는 코드
@@ -95,6 +103,8 @@ public class IntegrationTest {
 			} catch (Exception e) {
 				//  ignore
 			}
+
+			properties.put("spring.kafka.bootstrap-servers", kafka.getBootstrapServers());
 
 			TestPropertyValues.of(properties)
 				.applyTo(applicationContext);

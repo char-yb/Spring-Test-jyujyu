@@ -13,7 +13,9 @@ spring:
       host: localhost
       port: 6379
   kafka:
+#    카프카 서버의 주소를 설정
     bootstrap-servers: localhost:9092
+#    consumer의 동작 방식을 설정
     consumer:
       auto-offset-reset: earliest
 
