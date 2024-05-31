@@ -5,7 +5,9 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
@@ -73,5 +75,76 @@ public class ArchitectureTest {
 		rule.check(javaClasses);
 	}
 
+	@Test
+	@DisplayName("request 패키지 안에 있는 클래스들은 Request로 끝나야 한다.")
+	public void requestTest() {
+		// ArchRule rule 생성
+		ArchRule rule = classes()
+			// request 패키지 안에 있는 클래스들은 Request로 끝나야 한다.
+			// 뒤에 ..을 붙이면 하위 패키지까지 검증
+			.that().resideInAPackage("..request..")
+			// Request 패키지 안에 있는 클래스들은 이렇게 request 라는 이름으로 끝나야 합니다. 라는 룰 정의
+			.should().haveSimpleNameEndingWith("Request");
 
+		rule.check(javaClasses);
+	}
+
+	@Test
+	@DisplayName("response 패키지 안에 있는 클래스들은 Response로 끝나야 한다.")
+	public void responseTest() {
+		// ArchRule rule 생성
+		ArchRule rule = classes()
+			// response 패키지 안에 있는 클래스들은 Response로 끝나야 한다.
+			// 뒤에 ..을 붙이면 하위 패키지까지 검증
+			.that().resideInAPackage("..response..")
+			// Response 패키지 안에 있는 클래스들은 이렇게 response 라는 이름으로 끝나야 합니다. 라는 룰 정의
+			.should().haveSimpleNameEndingWith("Response");
+
+		rule.check(javaClasses);
+	}
+
+	@Test
+	@DisplayName("repository 패키지 안에 있는 클래스들은 Repository로 끝나야 하고, 인터페이스이여야 한다.")
+	public void repositoryTest() {
+		// ArchRule rule 생성
+		ArchRule rule = classes()
+			// repository 패키지 안에 있는 클래스들은 Repository로 끝나야 한다.
+			// 뒤에 ..을 붙이면 하위 패키지까지 검증
+			.that().resideInAnyPackage("..dao..")
+			// Repository 패키지 안에 있는 클래스들은 이렇게 repository 라는 이름으로 끝나야 합니다. 라는 룰 정의
+			.should().haveSimpleNameEndingWith("Repository")
+			.andShould().beInterfaces();
+
+		rule.check(javaClasses);
+	}
+
+	@Test
+	@DisplayName("service 패키지 안에 있는 클래스들은 Service로 끝나야 하고, @Service 어노테이션을 가져야 한다.")
+	public void serviceAnnotationTest() {
+		// ArchRule rule 생성
+		ArchRule rule = classes()
+			// service 패키지 안에 있는 클래스들은 Service로 끝나야 한다.
+			// 뒤에 ..을 붙이면 하위 패키지까지 검증
+			.that().resideInAnyPackage("..service..")
+			// Service 패키지 안에 있는 클래스들은 이렇게 service 라는 이름으로 끝나야 합니다. 라는 룰 정의
+			.should().haveSimpleNameEndingWith("Service")
+			.andShould().beAnnotatedWith(Service.class);
+
+		rule.check(javaClasses);
+	}
+
+	@Test
+	@DisplayName("config 패키지 안에 있는 클래스들은 Config로 끝나야 하고, @Configuration 어노테이션을 가져야 한다.")
+	public void configAnnotationTest() {
+		// ArchRule rule 생성
+		ArchRule rule = classes()
+			// config 패키지 안에 있는 클래스들은 Config로 끝나야 한다.
+			// 뒤에 ..을 붙이면 하위 패키지까지 검증
+			.that().resideInAnyPackage("..config..")
+			// Config 패키지 안에 있는 클래스들은 이렇게 config 라는 이름으로 끝나야 합니다. 라는 룰 정의
+			.should().haveSimpleNameEndingWith("Config")
+			.andShould().beAnnotatedWith(Configuration.class);
+
+		rule.check(javaClasses);
+	}
 }
