@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import com.jyujyu.springtest.MyCalculator;
 import com.jyujyu.springtest.score.dao.StudentFailRepository;
 import com.jyujyu.springtest.score.dao.StudentPassRepository;
 import com.jyujyu.springtest.score.dao.StudentScoreRepository;
