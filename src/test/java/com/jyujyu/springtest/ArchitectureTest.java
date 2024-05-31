@@ -147,4 +147,84 @@ public class ArchitectureTest {
 
 		rule.check(javaClasses);
 	}
+
+	@Test
+	@DisplayName("Controller는 Request/Response를 사용할 수 없다.")
+	public void controllerDependencyModelTest() {
+		// ArchRule rule 생성
+		ArchRule rule = classes()
+			.that().resideInAPackage("..api")
+			.should().dependOnClassesThat()
+			// Controller는 request, response, service 패키지에 의존한다는 의미
+			.resideInAnyPackage("..request..", "..response..", "..service..");
+
+		rule.check(javaClasses);
+	}
+
+	@Test
+	@DisplayName("어떠한 클래스도 컨트롤러를 의존할 수 없다.")
+	public void controllerDependencyTest() {
+		ArchRule rule = classes()
+			// api 패키지 안에 있는 클래스들은
+			.that().resideInAnyPackage("..api")
+			// api 패키지 안에 있는 클래스로만 의존이 되어야 한다.
+			.should().onlyHaveDependentClassesThat().resideInAnyPackage("..api");
+
+		rule.check(javaClasses);
+	}
+
+	@Test
+	@DisplayName("Controller는 Model을 사용할 수 없다.")
+	public void controllerModelTest() {
+		// ArchRule rule 생성
+		// noClasses는 부정형이 된다. 즉, 의존한다는 의미를 부정하는 것을 검증한다.
+		ArchRule rule = noClasses()
+			.that().resideInAnyPackage("..api")
+			.should().dependOnClassesThat()
+			// Controller는 model 패키지에 의존한다는 의미
+			.resideInAnyPackage("..domain..");
+
+		rule.check(javaClasses);
+	}
+
+	@Test
+	@DisplayName("Service는 Controller를 의존할 수 없다.")
+	public void serviceDependencyTest() {
+		ArchRule rule = noClasses()
+			// service 패키지 안에 있는 클래스들은
+			.that().resideInAnyPackage("..service..")
+			// service 패키지 안에 있는 클래스로만 의존이 되어야 한다.
+			.should().dependOnClassesThat().resideInAnyPackage("..api");
+
+		rule.check(javaClasses);
+	}
+
+	@Test
+	@DisplayName("Model은 오직 Service와 Repository에 의해 의존됨.")
+	public void modelDependencyTest() {
+		ArchRule rule = classes()
+			// domain 패키지 안에 있는 클래스들은
+			.that().resideInAnyPackage("..domain..")
+			.should().onlyHaveDependentClassesThat().resideInAnyPackage(
+				"..dao..", "..application..", "..domain..", "..dto.."
+			);
+
+		/*
+		 * Builder 클래스 같은 경우는 Lombok이 자동으로 만들어주는 클래스여서 ArchUnit을 통해 어떤 의존성을 가지고 있는 지 체크
+		 */
+		rule.check(javaClasses);
+	}
+
+	@Test
+	@DisplayName("Model은 아무것도 의존하지 않는다.")
+	public void modelDependencyModelTest() {
+		ArchRule rule = classes()
+			.that().resideInAnyPackage("..domain..")
+			.should().onlyDependOnClassesThat()
+			// self-참조
+			.resideInAnyPackage("..domain..", "java..", "jakarta..");
+
+		rule.check(javaClasses);
+	}
+
 }
