@@ -2,6 +2,11 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.4'
+    /*
+    Jacoco는 테스트가 동작하고 나서 이 테스트 코드들이 애플리케이션 소스들을 얼마나 커버하고 있는지 측정
+
+     */
+    id 'jacoco'
 }
 
 group = 'com.jyujyu.springtest'
@@ -51,6 +56,25 @@ dependencies {
     testImplementation 'com.tngtech.archunit:archunit:1.1.0'
 }
 
+jacoco {
+    toolVersion = "0.8.8"
+}
+
 tasks.named('test') {
     useJUnitPlatform()
+
+    // test 실행 시 jacocoTestReport도 실행
+    jacoco {}
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required = true
+        csv.required = false
+        html.required = true
+
+        xml.destination(file("build/jacoco/jacoco.xml"))
+        html.destination(file("build/jacoco/jacocoHtml"))
+    }
 }
