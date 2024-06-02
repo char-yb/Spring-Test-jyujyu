@@ -77,4 +77,39 @@ tasks.jacocoTestReport {
         xml.destination(file("build/jacoco/jacoco.xml"))
         html.destination(file("build/jacoco/jacocoHtml"))
     }
+
+    finalizedBy(tasks.jacocoTestCoverageVerification)
+}
+
+// jacoco 테스트 커버리지 검증
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                // 라인 counting
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                // 커버리지가 80% 이상이어야 함
+                minimum = BigDecimal.valueOf(0.6)
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                // 한 클래스는 100줄 이상의 소스 코드를 가질 수 없다는 의미
+                maximum = BigDecimal.valueOf(100)
+            }
+
+            excludes = List.of(
+                    "*.api.*",
+                    "*.dto.*",
+                    "*.service.*",
+                    "com.jyujyu.springtest.SpringtestApplication",
+                    "com.jyujyu.springtest.MyCalculatorApplication",
+            )
+        }
+    }
 }
