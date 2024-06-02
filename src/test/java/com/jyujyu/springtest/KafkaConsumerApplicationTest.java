@@ -3,6 +3,7 @@ package com.jyujyu.springtest;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import com.jyujyu.springtest.service.KafkaConsumerService;
 import com.jyujyu.springtest.service.KafkaProducerService;
 
+@Order(0)
 public class KafkaConsumerApplicationTest extends IntegrationTest {
 
 	@Autowired
