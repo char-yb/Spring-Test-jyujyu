@@ -4,9 +4,9 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
     /*
     Jacoco는 테스트가 동작하고 나서 이 테스트 코드들이 애플리케이션 소스들을 얼마나 커버하고 있는지 측정
-
      */
     id 'jacoco'
+    id "org.sonarqube" version "4.0.0.2929"
 }
 
 group = 'com.jyujyu.springtest'
@@ -111,5 +111,18 @@ tasks.jacocoTestCoverageVerification {
                     "com.jyujyu.springtest.MyCalculatorApplication",
             )
         }
+    }
+}
+
+sonar {
+    properties {
+        property("sonar.host.url", "http://localhost:9000")
+        property("sonar.login", "sqp_5f4c014525c1f45efe56fd31d9ade12fa7250eba")
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
+        property("sonar.sourceEncoding", "UTF-8")
+        property("sonar.projectKey", "springtest")
+        property("sonar.projectName", "springtest")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/jacoco/jacoco.xml")
     }
 }
