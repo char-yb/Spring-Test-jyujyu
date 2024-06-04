@@ -19,23 +19,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class StudentScore {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "student_score_id")
-	private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "student_score_id")
+  private Long id;
 
-	@Column(name = "exam")
-	private String exam;
+  @Column(name = "exam")
+  private String exam;
 
-	@Column(name = "student_name")
-	private String studentName;
+  @Column(name = "student_name")
+  private String studentName;
 
-	@Column(name = "kor_score")
-	private Integer korScore;
+  @Column(name = "kor_score")
+  private Integer korScore;
 
-	@Column(name = "eng_score")
-	private Integer engScore;
+  @Column(name = "eng_score")
+  private Integer engScore;
 
-	@Column(name = "math_score")
-	private Integer mathScore;
+  @Column(name = "math_score")
+  private Integer mathScore;
 }
