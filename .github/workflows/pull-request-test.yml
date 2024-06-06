@@ -16,7 +16,19 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v3.0.2
+
+#     path filter
+#     실제로 gradle이 수정되었거나 src에 있는 파일이 수정되었을때만 실행
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            application:
+              - 'build.gradle'
+              - 'src/**'
+
       - name: JDK install
+        if: steps.changes.outputs.application == 'true'
         uses: actions/setup-java@v3
         with:
           distribution: zulu
@@ -29,6 +41,7 @@ jobs:
 
 #     Jacoco Report
       - name: Coverage Report
+        if: steps.changes.outputs.application == 'true'
         uses: madrapps/jacoco-report@v1.6.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
