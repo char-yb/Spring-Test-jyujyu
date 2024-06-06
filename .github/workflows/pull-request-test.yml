@@ -1,0 +1,69 @@
+name: Pull Request Test
+
+on:
+    pull_request:
+#      PR이 열렸을때, 동기화 되었을때, PR이 다시 열렸을때
+      types: [opened, synchronize, reopened]
+
+permissions: read-all
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3.0.2
+
+#     path filter
+#     실제로 gradle이 수정되었거나 src에 있는 파일이 수정되었을때만 실행
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            application:
+              - 'build.gradle'
+              - 'src/**'
+
+      - name: JDK install
+        if: steps.changes.outputs.application == 'true'
+        uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Gradle Build
+        run: |
+          ./gradlew build --parallel
+
+#     Jacoco Report
+      - name: Coverage Report
+        if: steps.changes.outputs.application == 'true'
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Code Coverage Report
+          update-comment: true
+          min-coverage-overall: 10
+          min-coverage-changed-files: 60
+          paths: |
+            ${{ github.workspace }}/**/build/jacoco/jacoco.xml
+
+  style-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3.0.2
+      - name: JDK install
+        uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Checkstyle
+        run: |
+         ./gradlew spotlessCheck
