@@ -25,7 +25,7 @@ import org.testcontainers.utility.DockerImageName;
 @SpringBootTest
 @Transactional
 @ContextConfiguration(initializers = IntegrationTest.IntegrationTestInitializer.class)
-public class IntegrationTest {
+public class IntegrationTest extends DatabaseCleaner {
 
   static DockerComposeContainer rdbms;
   // redis container 생성
