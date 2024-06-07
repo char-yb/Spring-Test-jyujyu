@@ -35,10 +35,17 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Gradle Build
+      - name: Setup Gradle
         if: steps.changes.outputs.application == 'true'
-        run: |
-          ./gradlew build --parallel
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: check
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
+
+#      - name: Gradle Build
+#        if: steps.changes.outputs.application == 'true'
+#        run: |
+#          ./gradlew build --parallel
 
 #     Jacoco Report
       - name: Coverage Report

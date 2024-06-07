@@ -62,6 +62,11 @@ jacoco {
     toolVersion = "0.8.8"
 }
 
+def QDomains = []
+for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+    QDomains.add(qPattern + '*')
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 
@@ -111,7 +116,7 @@ tasks.jacocoTestCoverageVerification {
                     "*.service.*",
                     "com.jyujyu.springtest.SpringtestApplication",
                     "com.jyujyu.springtest.MyCalculatorApplication",
-            )
+            ) + QDomains
         }
     }
 }
@@ -131,6 +136,7 @@ sonar {
 
 spotless {
     java {
+        target("**/*.java")
         googleJavaFormat()
         // 사용하지 않은 import문 제거
         removeUnusedImports()
