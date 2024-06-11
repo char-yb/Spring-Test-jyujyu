@@ -11,7 +11,6 @@ import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.localstack.LocalStackContainer;
@@ -23,9 +22,8 @@ import org.testcontainers.utility.DockerImageName;
 // 실제로 테스트 코드가 동작할 때 SpringContext를 Load하지 않지만
 // SpringBootTest 어노테이션을 붙여주면 Application API 서버를 실행하는 것처럼 빈들을 모두 스캔하여 등록해주는 과정을 거친다.
 @SpringBootTest
-@Transactional
 @ContextConfiguration(initializers = IntegrationTest.IntegrationTestInitializer.class)
-public class IntegrationTest extends DatabaseCleaner {
+public class IntegrationTest {
 
   static DockerComposeContainer rdbms;
   // redis container 생성
