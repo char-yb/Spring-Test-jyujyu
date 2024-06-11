@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Ignore;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
@@ -22,6 +23,7 @@ import org.testcontainers.utility.DockerImageName;
 // 실제로 테스트 코드가 동작할 때 SpringContext를 Load하지 않지만
 // SpringBootTest 어노테이션을 붙여주면 Application API 서버를 실행하는 것처럼 빈들을 모두 스캔하여 등록해주는 과정을 거친다.
 @SpringBootTest
+@ExtendWith(NoTransactionExtension.class)
 @ContextConfiguration(initializers = IntegrationTest.IntegrationTestInitializer.class)
 public class IntegrationTest {
 
