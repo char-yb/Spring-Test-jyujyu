@@ -3,13 +3,10 @@ package com.jyujyu.springtest.score.application;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import com.jyujyu.springtest.IntegrationTest;
-import com.jyujyu.springtest.NoTransactionExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@ExtendWith(NoTransactionExtension.class)
 public class RedisServiceTest extends IntegrationTest {
 
   @Autowired private RedisService redisService;
